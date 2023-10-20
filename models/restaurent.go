@@ -4,7 +4,6 @@ import (
 	"gorm.io/gorm"
 )
 
-
 type Restaurant struct {
     gorm.Model
     Name     string `gorm:"not null"`
@@ -12,4 +11,5 @@ type Restaurant struct {
     Address  string
     Contact  string `gorm:"not null"`
     Rating   float32
+    ImageUrl string `gorm:"not null"`
 }

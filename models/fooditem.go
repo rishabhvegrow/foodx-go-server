@@ -10,4 +10,5 @@ type FoodItem struct {
 	Price       float32 `gorm:"not null"`
 	Description string
     RestaurantID uint    `gorm:"not null"`
+	ImageUrl    string 	 `gorm:"not null"`
 }

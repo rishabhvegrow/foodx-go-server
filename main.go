@@ -4,6 +4,7 @@ import (
     "log"
 	"github.com/gin-gonic/gin"
     "github.com/joho/godotenv"
+    "github.com/gin-contrib/cors"
 	"github.com/rishabhvegrow/foodx-go-server/database"
     "github.com/rishabhvegrow/foodx-go-server/models"
     "github.com/rishabhvegrow/foodx-go-server/routes"
@@ -23,6 +24,11 @@ func main() {
     // Migrating DB models
     db := database.GetDB()
     db.AutoMigrate(&models.User{}, &models.Restaurant{}, &models.FoodItem{}, &models.CartItem{}, &models.Transaction{})
+
+    config := cors.DefaultConfig()
+    config.AllowOrigins = []string{"http://example.com", "http://localhost:3000"} // Replace with your allowed origins
+    config.AllowMethods = []string{"GET", "POST", "PUT", "DELETE"}
+    router.Use(cors.New(config))
 
     routes.SetupRoutes(router)
 
