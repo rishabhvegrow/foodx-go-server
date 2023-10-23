@@ -10,7 +10,6 @@ import (
     "github.com/rishabhvegrow/foodx-go-server/routes"
 )
 
-
 func main() {
     router := gin.Default()
 
@@ -26,8 +25,9 @@ func main() {
     db.AutoMigrate(&models.User{}, &models.Restaurant{}, &models.FoodItem{}, &models.CartItem{}, &models.Transaction{})
 
     config := cors.DefaultConfig()
-    config.AllowOrigins = []string{"http://example.com", "http://localhost:3000"} // Replace with your allowed origins
+    config.AllowOrigins = []string{"*"} 
     config.AllowMethods = []string{"GET", "POST", "PUT", "DELETE"}
+    config.AllowHeaders = []string{"Authorization", "X-Custom-Header", "content-type", "Access-Control-Allow-Origin"}
     router.Use(cors.New(config))
 
     routes.SetupRoutes(router)

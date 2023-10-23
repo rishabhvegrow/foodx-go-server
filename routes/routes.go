@@ -10,8 +10,8 @@ func SetupRoutes(router *gin.Engine) {
 
     base := router.Group("/")
     base.GET("/", controlers.GetPing)
-    base.POST("register/", controlers.CreateUser)
-    base.POST("login/", controlers.Login)
+    base.POST("signup/", controlers.CreateUser)
+    base.POST("signin/", controlers.Login)
 
     userGroup := router.Group("/users")
     userGroup.GET("/", controlers.GetUsers)
