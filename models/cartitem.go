@@ -12,4 +12,5 @@ type CartItem struct {
     Price        float32 `gorm:"not null"`
     TransactionID uint
     IsCheckedOut bool `gorm:"default:false"`
+    FoodItem     FoodItem
 }

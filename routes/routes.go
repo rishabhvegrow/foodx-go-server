@@ -14,6 +14,7 @@ func SetupRoutes(router *gin.Engine) {
     base.POST("signin/", controlers.Login)
 
     userGroup := router.Group("/users")
+    userGroup.Use(controlers.JWTAuthMiddleware())
     userGroup.GET("/", controlers.GetUsers)
     userGroup.GET("/:id", controlers.GetUser)
     userGroup.DELETE("/:id", controlers.DeleteUser)
@@ -31,12 +32,13 @@ func SetupRoutes(router *gin.Engine) {
     foodGroup.POST("/", controlers.CreateFoodItem)
     foodGroup.PUT("/:id", controlers.UpdateFoodItem)
     foodGroup.DELETE("/:id", controlers.DeleteFoodItem)
-    foodGroup.POST("/:id/add", controlers.AddFoodToCart)
-    foodGroup.POST("/:id/remove", controlers.RemoveFoodFromCart)
+    foodGroup.POST("/add/:id", controlers.AddFoodToCart)
+    foodGroup.POST("/remove/:id", controlers.RemoveFoodFromCart)
 
     cartGroup := router.Group("/cart")
     cartGroup.Use(controlers.JWTAuthMiddleware())
     cartGroup.GET("/", controlers.GetCartDetails)
+    cartGroup.DELETE("/remove/:id", controlers.RemoveCartItem)
     cartGroup.GET("/orders", controlers.GetOrderedItems)
     cartGroup.POST("/checkout", controlers.CheckoutCart)
 

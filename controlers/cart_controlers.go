@@ -7,20 +7,48 @@ import (
 	"github.com/rishabhvegrow/foodx-go-server/models"
 )
 
-//  Cart details
-func GetCartDetails(c *gin.Context){
-    db = database.GetDB()
-    // Send all the cart items of the user
+func RemoveCartItem(c *gin.Context) {
+    db := database.GetDB()
+    id := c.Param("id")
+
+    var cartItem models.CartItem
+    if err := db.Where("id = ?", id).First(&cartItem).Error; err != nil {
+        c.JSON(http.StatusNotFound, gin.H{"error": "CartItem not found"})
+        return
+    }
+
+    if !cartItem.IsCheckedOut {
+        if err := db.Delete(&cartItem).Error; err != nil {
+            c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete CartItem"})
+            return
+        }
+
+        c.JSON(http.StatusOK, gin.H{"message": "CartItem deleted successfully"})
+    } else {
+        c.JSON(http.StatusForbidden, gin.H{"error": "CartItem cannot be deleted because it is checked out"})
+    }
+}
+
+
+func GetCartDetails(c *gin.Context) {
+    db := database.GetDB()
+
     userID := c.MustGet("user_id").(uint)
 
     var cartItems []models.CartItem
-    if err := db.Where("user_id = ? AND is_checked_out = ?", userID, false).Find(&cartItems).Error; err != nil {
+
+    if err := db.
+        Preload("FoodItem").
+        Where("user_id = ? AND is_checked_out = ?", userID, false).
+        Find(&cartItems).Error; err != nil {
         c.JSON(http.StatusInternalServerError, gin.H{"error": "No items added in the cart"})
         return
     }
 
+
     c.JSON(http.StatusOK, cartItems)
 }
+
 
 func CheckoutCart(c *gin.Context) {
     db = database.GetDB()
