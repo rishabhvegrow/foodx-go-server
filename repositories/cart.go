@@ -1,11 +1,12 @@
 package repositories
 
 import (
+	"github.com/rishabhvegrow/foodx-go-server/database"
 	"github.com/rishabhvegrow/foodx-go-server/models"
 )
 
 func GetCartItemByID(id string)(*models.CartItem, error){
-
+    db = database.GetDB()
 	var cartItem models.CartItem
 	if err := db.Where("id = ?", id).First(&cartItem).Error; err != nil {
         return nil, err
@@ -15,7 +16,7 @@ func GetCartItemByID(id string)(*models.CartItem, error){
 }
 
 func RemoveCartItemByID(id uint)(error) {
-    
+    db = database.GetDB()
 	if err := db.Where("id = ?", id).Delete(&models.CartItem{}).Error; err != nil {
         return err
     }
@@ -23,7 +24,7 @@ func RemoveCartItemByID(id uint)(error) {
 }
 
 func GetCartItemsOfAUser(userID uint, isChecked bool)(*[]models.CartItem, error){
-
+    db = database.GetDB()
 	var cartItems []models.CartItem
 
     if err := db.
@@ -37,6 +38,7 @@ func GetCartItemsOfAUser(userID uint, isChecked bool)(*[]models.CartItem, error)
 }
 
 func GetTransactionsOfUser(userID uint)(*models.Transaction, error){
+    db = database.GetDB()
 	var transactions models.Transaction
 	if err := db.Where("user_id = ?", userID).Find(&transactions).Error; err != nil{
 		return nil, err
@@ -45,6 +47,7 @@ func GetTransactionsOfUser(userID uint)(*models.Transaction, error){
 }
 
 func CheckoutCart(userID uint)(*models.Transaction, error){
+    db = database.GetDB()
 	tx := db.Begin()
 	if tx.Error != nil {
         return nil,tx.Error

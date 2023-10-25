@@ -1,9 +1,13 @@
 package repositories
 
-import "github.com/rishabhvegrow/foodx-go-server/models"
+import (
+    "github.com/rishabhvegrow/foodx-go-server/database"
+    "github.com/rishabhvegrow/foodx-go-server/models"
+)
+
 
 func CreateFoodItem(foodItem models.FoodItem)(*models.FoodItem,error){
-	
+	db = database.GetDB()
     if err := db.Create(&foodItem).Error; err != nil{
         return nil,err
     }
@@ -11,6 +15,7 @@ func CreateFoodItem(foodItem models.FoodItem)(*models.FoodItem,error){
 }
 
 func GetFoodItemByID(id any)(*models.FoodItem,error){
+    db = database.GetDB()
 	var foodItem models.FoodItem
 
     if err := db.First(&foodItem, id).Error; err != nil {
@@ -20,7 +25,7 @@ func GetFoodItemByID(id any)(*models.FoodItem,error){
 }
 
 func UpdateFoodItem(id any,updatedFoodItem models.FoodItem)(*models.FoodItem, error){
-
+    db = database.GetDB()
 	foodItem, err := GetFoodItemByID(id)
     if err != nil {
         return nil,err
@@ -40,6 +45,7 @@ func UpdateFoodItem(id any,updatedFoodItem models.FoodItem)(*models.FoodItem, er
 }
 
 func DeleteFoodItem(id any)(error){
+    db = database.GetDB()
     var foodItem models.FoodItem
     if err := db.Delete(&foodItem, id).Error; err != nil {
         return err
@@ -48,6 +54,7 @@ func DeleteFoodItem(id any)(error){
 }
 
 func GetMenuOfRestaurent(restaurentID any)(*[]models.FoodItem, error){
+    db = database.GetDB()
     var foodItems []models.FoodItem
 
     if err := db.Where("restaurant_id = ?", restaurentID).Find(&foodItems).Error; err != nil{
@@ -58,6 +65,7 @@ func GetMenuOfRestaurent(restaurentID any)(*[]models.FoodItem, error){
 }
 
 func AddFoodToCart(foodID any, userID any)(error){
+    db = database.GetDB()
     var foodItem models.FoodItem
     if err := db.First(&foodItem, foodID).Error; err != nil {
         return err
@@ -85,6 +93,7 @@ func AddFoodToCart(foodID any, userID any)(error){
 }
 
 func RemoveFoodFromCart(foodID any, userID any)(error){
+    db = database.GetDB()
     var foodItem models.FoodItem
     if err := db.First(&foodItem, foodID).Error; err != nil {
         return err
