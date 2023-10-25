@@ -29,7 +29,6 @@ func RemoveCartItem(c *gin.Context) {
     }
 }
 
-
 func GetCartDetails(c *gin.Context) {
     db := database.GetDB()
 
@@ -48,7 +47,6 @@ func GetCartDetails(c *gin.Context) {
 
     c.JSON(http.StatusOK, cartItems)
 }
-
 
 func CheckoutCart(c *gin.Context) {
     db = database.GetDB()
@@ -114,14 +112,18 @@ func GetTransactions(c *gin.Context){
 }
 
 func GetOrderedItems(c *gin.Context){
-    db = database.GetDB()
+    db := database.GetDB()
     userID := c.MustGet("user_id").(uint)
-
     var cartItems []models.CartItem
-    db := db.Where("user_id = ? AND is_checked_out = ?", userID, true).Find(&cartItems)
-    if db.Error != nil {
-        c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch ordered items"})
+
+    if err := db.
+        Preload("FoodItem").
+        Where("user_id = ? AND is_checked_out = ?", userID, true).
+        Find(&cartItems).Error; err != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "No items added in the Orders"})
         return
     }
+
+
     c.JSON(http.StatusOK, cartItems)
 }
